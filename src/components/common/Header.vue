@@ -24,9 +24,9 @@
                     {{username}}<i class="el-icon-caret-bottom"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item >基本资料</el-dropdown-item>
-                    <el-dropdown-item >基本资料</el-dropdown-item>
-                    <el-dropdown-item >基本资料</el-dropdown-item>
+                    <el-dropdown-item  command="loginout">基本资料</el-dropdown-item>
+                    <el-dropdown-item command="s">基本资料</el-dropdown-item>
+                    <el-dropdown-item command="y">基本资料</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
             <div class="btn-bell" >
@@ -66,8 +66,21 @@ export default {
       ]
     };
   },
+  computed: {
+    username() {
+      let username = localStorage.getTiem("fk_username");
+      return username ? username : this.username;
+    }
+  },
   methods: {
-    handleCommand() {},
+    // 用户名下拉菜单选择事件
+    handleCommand(command) {
+      console.log(command);
+      if (command == "loginout") {
+        localStorage.removeItem("fk_username");
+        this.$router.push("/login");
+      }
+    },
     // 侧边栏折叠
     collapseChage() {
       this.collapse = !this.collapse;
@@ -158,5 +171,6 @@ export default {
 .user-name {
   margin-right: 10px;
   color: #fff;
+  cursor: pointer;
 }
 </style>
