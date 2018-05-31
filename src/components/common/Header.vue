@@ -1,7 +1,7 @@
 <template>
-    <div class="header" >
+    <div class="header" :style="{backgroundColor:color}">
         <!-- 折叠按钮 -->
-        <div class="header-btn">
+        <div class="header-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
         <div class="header-logo">
@@ -9,8 +9,8 @@
         </div>
         <div class="header-right">
             <!-- 全屏显示 -->
-            <div class="header-fullscreen">
-                <el-tooltip effect="dark" placement="bottom">
+            <div class="header-fullscreen" @click="handleFullScreen">
+                <el-tooltip effect="dark" :content="fullscreen?`取消全屏`:`全屏`" placement="bottom">
                     <i class="el-icon-rank"></i>
                 </el-tooltip>
             </div>
@@ -30,23 +30,76 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <div class="btn-bell" >
-                <el-color-picker>
-
-                </el-color-picker>
+                    <el-color-picker
+                    v-model="color"
+                    show-alpha
+                    :predefine="predefineColors">
+                    </el-color-picker>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import bus from "../common/bus";
 export default {
   data() {
     return {
-      username: "admin"
+      username: "admin",
+      fullscreen: false,
+      color: "#242f42",
+      predefineColors: [
+        "#ff4500",
+        "#ff8c00",
+        "#ffd700",
+        "#90ee90",
+        "#00ced1",
+        "#1e90ff",
+        "#c71585",
+        "rgba(255, 69, 0, 0.68)",
+        "rgb(255, 120, 0)",
+        "hsv(51, 100, 98)",
+        "hsva(120, 40, 94, 0.5)",
+        "hsl(181, 100%, 37%)",
+        "hsla(209, 100%, 56%, 0.73)",
+        "#c7158577"
+      ]
     };
   },
   methods: {
-    handleCommand() {}
+    handleCommand() {},
+    // 侧边栏折叠
+    collapseChage() {
+      this.collapse = !this.collapse;
+      bus.$emit("collapse", this.collapse);
+    },
+    // 全屏事件
+    handleFullScreen() {
+      let element = document.documentElement;
+      if (this.fullscreen) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitCancelFullScreen) {
+          document.webkitCancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      } else {
+        if (element.requestFullscreen) {
+          element.requestFullscreen();
+        } else if (element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+          // IE11
+          element.msRequestFullscreen();
+        }
+      }
+      this.fullscreen = !this.fullscreen;
+    }
   }
 };
 </script>
@@ -75,5 +128,35 @@ export default {
 .header-right {
   float: right;
   padding-right: 50px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+}
+.header-user-avator {
+  margin-right: 10px;
+}
+.header-user-avator img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+.header-fullscreen {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  border-radius: 15px;
+  cursor: pointer;
+  transform: rotate(45deg);
+  margin-right: 10px;
+  font-size: 24px;
+}
+.btn-bell {
+  margin-top: 5px;
+}
+.user-name {
+  margin-right: 10px;
+  color: #fff;
 }
 </style>
