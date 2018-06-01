@@ -5,8 +5,14 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui';
 import axios from 'axios';
+import echarts from 'echarts';
 import 'element-ui/lib/theme-chalk/index.css';
+import * as custom from './filter/time';
 
+
+Object.keys(custom).forEach(key => {
+  Vue.filter(key, custom[key])
+})
 import Element from 'element-ui';
 Vue.use(Element, {
   size: 'small',
@@ -16,6 +22,7 @@ Vue.use(Element, {
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
+Vue.prototype.$echarts = echarts;
 
 /* eslint-disable no-new */
 new Vue({
