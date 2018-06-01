@@ -24,3 +24,9 @@ a {
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+.container{
+    padding: 30px;
+    background: #fff;
+    border:1px sold #ddd;
+    border-radius: 5px;
+}

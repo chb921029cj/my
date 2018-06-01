@@ -45,7 +45,7 @@ import bus from "../common/bus";
 export default {
   data() {
     return {
-      username: "admin",
+      name: "admin",
       fullscreen: false,
       color: "#242f42",
       predefineColors: [
@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     username() {
-      let username = localStorage.getTiem("fk_username");
+      let username = localStorage.getItem("fk_username");
       return username ? username : this.username;
     }
   },
