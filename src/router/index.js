@@ -92,7 +92,23 @@ export default new Router({
           meta: {
             title: '密码管理'
           }
-        }
+        },
+        {
+          //黑名单管理
+          path: '/index7',
+          component: resolve => require(['../components/page/HS_queryInformation/HS_blackList.vue'], resolve),
+          meta: {
+            title: '黑名单管理'
+          },
+        },
+        {
+          //白名单管理
+          path: '/index8',
+          component: resolve => require(['../components/page/HS_queryInformation/HS_whiteList.vue'], resolve),
+          meta: {
+            title: '白名单管理'
+          },
+        }                
       ]
     },
     {

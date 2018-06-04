@@ -185,10 +185,22 @@
                   <el-col :span="2">
                     <el-button type="primary" @click="Print()">打印报告</el-button>
                   </el-col>
+                  <el-col style="position:absolute;top:0;line-height:16px;text-align:right;color:rgb(153,153,153)">
+                    <span >tips:若打印页面不全或不存在请重新点击打印报告</span>
+                  </el-col>
                 </el-row>
               </el-header>
-              <el-main style="pageBreakBefore:always"  id="subOutputRank-print">
-                <el-row class="container" style="padding-top:0">
+              <el-main  id="subOutputRank-print" >
+                <el-row v-show="false">
+                    <canvas id="myCanvas" width="200" height="230" >
+                    </canvas>
+                </el-row> 
+                <el-row    style="padding-top:0;position:relative;">
+                  <el-row id="bg" style="width:100%;height:100%;position:absolute;top:0;left:0;zIndex:9999" :style ="note" >
+                    <div >
+
+                    </div>
+                  </el-row>
                   <el-row class="report_t">
                     <div class="el-main-info l">
                       <span>报告编号：201805241119371288237</span>
@@ -562,7 +574,6 @@
                   </el-card>                                                       
                 </el-row>
               </el-main>
-
             </el-container>
         </el-dialog>
     </div>
@@ -571,6 +582,7 @@
 <script>
 import { httpGetCreditReport } from "@/api/http";
 import { timeFormat } from "../../../../static/js/time";
+// import "../../../assets/libs/jquery/jQuery.print.js";
 export default {
   data() {
     return {
@@ -601,7 +613,15 @@ export default {
       contactTableData: [{ testItem: "fas" }], //联系人信息
       esAddTableData: [{ testItem: "fas" }], //电商信息
       esDataTableData: [{ testItem: "fas" }], //电商数据统计
-      tripTableData: [{ testItem: "fas" }]
+      tripTableData: [{ testItem: "fas" }],
+      canvasimg: "",
+      canvasShow: true,
+      note: {
+        backgroundImage: ""
+        // backgroundRepeat: "no-repeat",
+        // backgroundSize: "25px auto",
+        // marginTop: "5px"
+      }
     };
   },
   methods: {
@@ -616,7 +636,20 @@ export default {
     //查看报告
     handleReport(index, row) {
       this.showVisible = true;
-      console.log(index, row);
+      setTimeout(() => {
+        if (this.canvasShow) {
+          var canvas = document.getElementById("myCanvas");
+          var ctx = canvas.getContext("2d");
+          ctx.save();
+          ctx.font = "30px Microsoft YaHei";
+          ctx.rotate(-45 * Math.PI / 180);
+          ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+          ctx.fillText("贝利风投", -100, 220);
+          ctx.restore();
+          this.note.backgroundImage = 'url("' + ctx.canvas.toDataURL() + '")';
+          this.canvasShow = false;
+        }
+      }, 20);
     },
     changeFullscreen() {
       if (this.fullscreen) {
@@ -687,21 +720,20 @@ export default {
     },
 
     Print() {
-      var printStr =
-        "<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8'></head><body >";
-      var content = "";
-
-      var str = document.getElementById("subOutputRank-print").innerHTML; //获取需要打印的页面元素 ，page1元素设置样式page-break-after:always，意思是从下一行开始分割。
-      content = content + str;
-      str = document.getElementById("subOutputRank-print").innerHTML; //获取需要打印的页面元素
-      content = content + str;
-
-      printStr = printStr + content + "</body></html>";
-      var pwin = window.open("Print.htm", "print"); //如果是本地测试，需要先新建Print.htm，如果是在域中使用，则不需要
-      pwin.document.write(printStr);
-      pwin.document.close(); //这句很重要，没有就无法实现
-      pwin.print();
-      window.close();
+      $("#subOutputRank-print").print({
+        //Use Global styles
+        globalStyles: false,
+        //Add link with attrbute media=print
+        mediaPrint: false,
+        //Custom stylesheet
+        //Print in a hidden iframe
+        //Don't print this
+        //Add this at top
+        stylesheet: "../static/css/print.css",
+        prepend: "贝利风投<br/>"
+        //Add this on bottom
+        // append: "<br/>Buh Bye!"
+      });
     }
   },
   mounted: function() {
@@ -713,16 +745,12 @@ export default {
       this.select_phone,
       2
     );
-  }
+  },
+  created() {}
 };
 </script>
 
 <style scoped>
-@media print {
-  #subOutputRank-print {
-    page-break-after: always;
-  }
-}
 .title {
   padding: 10px;
   font-weight: bold;
@@ -766,7 +794,7 @@ export default {
   height: 30px;
   line-height: 30px;
   display: inline-block;
-  background: #a584a7;
+  background: #e88f08;
   color: #fff;
   border-radius: 100px;
   padding: 0;
@@ -779,7 +807,7 @@ export default {
   margin-left: -100px;
 }
 .line {
-  background: #a584a7;
+  background: #e88f08;
   height: 4px;
   top: 13px;
   position: absolute;

@@ -146,12 +146,12 @@ export default {
               list: [
                 {
                   icon: "el-icon-star-on",
-                  nurl: "charts",
+                  nurl: "blacklist",
                   mname: "黑名单管理"
                 },
                 {
                   icon: "el-icon-star-on",
-                  nurl: "charts",
+                  nurl: "whitelist",
                   mname: "白名单管理"
                 }
               ]
