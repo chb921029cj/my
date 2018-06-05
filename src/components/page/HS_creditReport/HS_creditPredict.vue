@@ -617,7 +617,9 @@ export default {
             _this.tableData = data.list;
             _this.loading = false;
           })
-          .catch();
+          .catch(() => {
+            _this.loading = false;
+          });
       }
     },
     handleSearch() {

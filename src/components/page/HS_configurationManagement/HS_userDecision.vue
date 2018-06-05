@@ -2,7 +2,7 @@
     <div class="container">
         <el-row >
             <el-table  :data="tableData" border style="width: 100%" v-loading="loading">
-                <el-table-column  label="编号">
+                <el-table-column  sortable label="编号">
                     <template slot-scope="scope">
                         <el-row>
                             <span style="margin-left: 10px">编号:{{ scope.row.id }}</span>
@@ -118,28 +118,7 @@ export default {
           _this.loading = false;
         })
         .catch(() => {
-          const data = {
-            npage: 3,
-            allpage: 2,
-            pagesize: 1,
-            list: [
-              {
-                id: 1,
-                executeName: "123",
-                executePara: 48,
-                status: true,
-                type: false,
-                executeParaHelp: "总个数为： 年龄为：",
-                executeNameCn: "这是一段描述"
-              }
-            ],
-            type: 0,
-            allsize: 10
-          };
-          _this.pageSize = data.pagesize;
-          _this.currentPage = data.npage;
-          _this.total = data.allsize;
-          _this.tableData = data.list;
+          _this.loading = false;
         });
     },
     //当前页显示数据

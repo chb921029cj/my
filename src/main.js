@@ -8,7 +8,7 @@ import axios from 'axios';
 import echarts from 'echarts';
 import 'element-ui/lib/theme-chalk/index.css';
 import * as custom from './filter/time';
-import $ from 'jquery'
+import jQuery from 'jquery'
 import './assets/libs/jquery/jQuery.print.js'
 
   

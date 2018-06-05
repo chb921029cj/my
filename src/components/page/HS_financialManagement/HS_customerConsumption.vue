@@ -143,6 +143,7 @@ export default {
         })
         .catch(data => {
           console.log("这是错误的" + data);
+          _this.loading = false;
         });
     },
     handleCurrentChange(val) {

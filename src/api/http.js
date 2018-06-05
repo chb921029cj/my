@@ -214,18 +214,18 @@ export function httpUpdateCreditStatus(
 //credit 风控配置管理 执行器展示（新增 和复贷）
 export function httpGetExecutor(npage, pagesize, type) {
   let data = {
-      npage,
-      pagesize,
-      type
+    npage,
+    pagesize,
+    type
   };
   //console.log(data);
   return axios({
-      url: "/sys/getexecutor",
-      method: "post",
-      headers: {
-          'Content-type': 'application/x-www-form-urlencoded'
-      },
-      data: qs.stringify(data)
+    url: "/sys/getexecutor",
+    method: "post",
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(data)
   })
 }
 
@@ -233,8 +233,8 @@ export function httpGetExecutor(npage, pagesize, type) {
 export function httpGetCustuserInfo() {
   //console.log(data);
   return axios({
-      url: "/sys/getcustuserinfo",
-      method: "get",
+    url: "/sys/getcustuserinfo",
+    method: "get",
   })
 }
 
@@ -242,11 +242,47 @@ export function httpGetCustuserInfo() {
 export function httpPostCustuserInfo(data) {
   //console.log(data);
   return axios({
-      url: "/sys/updatecustuserinfo",
-      method: "post",
-      headers: {
-          'Content-type': 'application/x-www-form-urlencoded'
-      },
-      data: qs.stringify(data)
+    url: "/sys/updatecustuserinfo",
+    method: "post",
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(data)
+  })
+}
+
+//风控后台 / credit 信用报告 运营商列表 查看报告
+export function httpPostCarryReport(mifeng_report_id = 27) {
+  let data = {
+    mifeng_report_id,
+  };
+
+  return axios({
+    url: "/sys/getcarryreport",
+    method: "post",
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(data)
+  })
+}
+
+//风控后台 / credit 黑名单列表
+export function httpGetUserList(npage, pagesize, username, phonenumber, idno) {
+  let data = {
+    npage,
+    pagesize,
+    username,
+    phonenumber,
+    idno
+  };
+
+  return axios({
+    url: "/black/getlist",
+    method: "post",
+    headers: {
+      'Content-type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(data)
   })
 }

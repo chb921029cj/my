@@ -81,24 +81,26 @@ export default {
       _this.loading = true;
       httpGetConsumeDetail(npage, pagesize)
         .then(data => {
-          console.log(data);
           _this.allpage = data.data.allpage * data.data.pagesize;
-          _this.currentPage = data.npage;
+          _this.currentPage = data.data.npage;
           _this.tableData = data.data.list;
           _this.loading = false;
         })
-        .catch();
+        .catch(() => {
+          _this.loading = false;
+        });
     },
     GetMoneyNow() {
+      let _this = this;
       httpGetMoneyNow()
         .then(data => {
-          this.moneyNow = data.data;
+          _this.moneyNow = data.data;
         })
         .catch();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getTableData(val, this.pageSize);
+      this.getTableData(this.currentPage, this.pageSize);
     },
     handleSizeChange(val) {
       this.pageSize = val;

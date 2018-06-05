@@ -168,7 +168,7 @@
             </el-row>                                  
         </el-dialog>
         <!-- 查勘报告         -->
-        <el-dialog  :visible.sync="showVisible" :width="fullscreenWidth"   title="报告详情" :fullscreen="fullscreen" top="30px">
+        <el-dialog id="table" :visible.sync="showVisible" :width="fullscreenWidth"   title="报告详情" :fullscreen="fullscreen" top="30px">
             <el-container   :style="{ height: fullscreenHeight}" style="border: 1px solid #eee">
               <el-header style="font-size: 12px;overflow：hidden;line-height:60px;    background-color:#EEEEEE">
                 <el-row >
@@ -227,16 +227,20 @@
                         <tr>
                           <td>
                             <span class="item">姓名</span>
-                            <span>张国军</span>
-                            <span>男</span>
+                            <span>{{userBasicInformation.name}}</span>
+                            <span>{{userBasicInformation.gender?'男':'女'}}</span>
+                            <span>{{userBasicInformation.age}}</span>
+                            <span>{{userBasicInformation.province}}</span>
+                            <span>{{userBasicInformation.city}}</span>
                           </td>
                         </tr>
                         <tr>
                           <td>
                             <span class="item">身份证</span>
-                            <span>23412421241241</span>
-                            <span class="tip_y">不在金融圈</span>
-                            <span class="tip_y"></span>
+                            <span>{{userBasicInformation.idcard}}</span>
+                            <el-tag :type="userBasicInformation.financialBlacklist?'danger':'success'">{{userBasicInformation.financialBlacklist?'在金融机构黑名单':'不在金融机构黑名单'}}</el-tag>
+                            <el-tag :type="userBasicInformation.courtBlacklist?'danger':'success'">{{userBasicInformation.courtBlacklist?'在法院黑名单':'不在法院黑名单'}}</el-tag>
+                            <!-- <span class="tip_y"></span> -->
  
                           </td>
                         </tr>
@@ -244,16 +248,19 @@
                           <td>
                             <span class="item">手机号</span>
                             <span>1231412412</span>
-                            <span class="tip_y"></span>
-                            <span class="remarks">用户姓名与运营商提供的姓名[张国军]匹配成功</span>
-                            <span class="remarks"></span>
+                            <span >{{userBasicInformation.cellLoc}}</span>
+                            <span>注册时间：</span>
+                            <span>{{userBasicInformation.regTime}}</span>
+                            <!-- <span class="tip_y"></span> -->
+                            <!-- <span class="remarks">用户姓名与运营商提供的姓名[张国军]匹配成功</span> -->
+                            <!-- <span class="remarks"></span> -->
                           </td>
                         </tr>
                       </tbody>
                     </table>                                       
                   </el-card>
                   <!-- 亲属联系人信息 -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="kinsfolkTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>亲属联系人信息</h2>
@@ -272,7 +279,7 @@
                     </el-table>                    
                   </el-card>
                   <!-- 用户信息检测 -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="userInfo.id">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>用户信息检测</h2>
@@ -284,54 +291,54 @@
                         <tr >
                           <th width="100" rowspan="9"> 用户信息查询</th>    
                           <td width="220"> 查询过该用户的相关企业数量 </td>
-                          <td><span>0</span></td>
+                          <td><span>{{userInfo.searchedOrgCnt}}</span></td>
                         </tr>
                         <tr>
                           <td> 查询过该用户的相关企业类型 </td>
                           <td> 
-			   
+                            {{userInfo.searchedOrgType}}
                           </td>
                         </tr>
                         <tr>
                           <td> 身份证组合过的其他姓名 </td>
                           <td>
-
+                            {{userInfo.idcardWithOtherPhones}}
                           </td>
                         </tr>
                         <tr>
                           <td>  身份证组合过其他电话  </td>
                           <td>
-
+                            {{userInfo.phoneWithOtherNames}}
                           </td>
                         </tr>
                         <tr>
                           <td>  电话号码组合过其他姓名  </td>
                           <td>
-
+                            {{userInfo.idcardWithOtherNames}}
                           </td>
                         </tr>
                         <tr>
                           <td>  电话号码组合过其他身份证  </td>
                           <td>
-
+                            {{userInfo.phoneWithOtherIdcards}}
                           </td>
                         </tr>
                         <tr>
                           <td>  电话号码注册过的相关企业数量  </td>
                           <td>
-
+                            {{userInfo.registerOrgCnt}}
                           </td>
                         </tr>
                         <tr>
                           <td>  电话号码注册过的相关企业类型  </td>
                           <td>
-
+                            {{userInfo.registerOrgType}}
                           </td>
                         </tr> 
                         <tr>
                           <td>  电话号码出现过的公开网站  </td>
                           <td>
-
+                            {{userInfo.arisedOpenWeb}}
                           </td>
                         </tr>                                                                                                                                                
                       </tbody>
@@ -340,50 +347,50 @@
                           <th width="100" rowspan="6">黑名单信息</th>
                           <td>黑中介分数</td>
                           <td>
-                            <span>0</span>
+                            <span>{{userInfo.phoneGrayScore}}</span>
                             （分数范围0-100，参考分为10，分数越低关系越紧密）
                           </td>
                         </tr>
                         <tr>
-                          <td> 直接联系人中黑名单人  </td>
+                          <td> 直接联系人中黑名单数  </td>
                           <td>
-                            <span>0</span>
+                            <span>{{userInfo.contactsClass1BlacklistCnt}}</span>
                             (直接联系人：和被查询号码有通话记录)
                           </td>
                         </tr>  
                         <tr>
                           <td> 间接联系人中黑名单人数  </td>
                           <td>
-                            <span>0</span>
+                            <span>{{userInfo.contactsClass2BlacklistCnt}}</span>
                             (间接联系人：和被查询号码的直接联系人有通话记录)
                           </td>
                         </tr>  
                         <tr>
                           <td> 直接联系人人数  </td>
                           <td>
-                            <span>80</span>
+                            <span>{{userInfo.contactsClass1Cnt}}</span>
                             (直接联系人：和被查询号码有通话记录)
                           </td>
                         </tr>  
                         <tr>
                           <td> 引起黑名单的直接联系人数量  </td>
                           <td>
-                            <span>0</span>
+                            <span>{{userInfo.contactsRouterCnt}}</span>
                              (直接联系人有和黑名单用户的通讯记录的号码数量)
                           </td>
                         </tr>  
                         <tr>
                           <td> 直接联系人中引起间接黑名单占比  </td>
                           <td>
-                              <span>0.00</span>
+                              <span>{{userInfo.contactsRouterRatio}}</span>
                               (直接联系人有和黑名单用户的通讯记录的号码数量在直接联系人数量中的百分比)
                           </td>
                         </tr>                                                                                                                         
-                      </tbody>
+                      </tbody>  
                   </table>
                   </el-card> 
                   <!-- 用户行为检测 -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="testTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>用户行为检测</h2>
@@ -391,16 +398,16 @@
                         </div>
                     </div>
                     <el-table :data="testTableData">
-                        <el-table-column prop="testItem" label="检测项目" width="150">
+                        <el-table-column prop="checkPointCn" label="检测项目" >
                         </el-table-column>
-                        <el-table-column prop="result" label="结果" width="150">
+                        <el-table-column prop="result" label="结果" >
                         </el-table-column>
-                        <el-table-column prop="gist" label="依据">
+                        <el-table-column prop="evidence" label="依据">
                         </el-table-column>
                     </el-table>                     
                   </el-card>   
                   <!-- 运营商消费数据               -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="operatorTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>运营商消费数据</h2>
@@ -408,32 +415,30 @@
                         </div>
                     </div>
                     <el-table :data="operatorTableData">
-                        <el-table-column prop="testItem" label="运行商" >
+                        <el-table-column prop="cellOperatorZh" label="运行商" >
                         </el-table-column>
-                        <el-table-column prop="result" label="号码" >
+                        <el-table-column prop="cellPhoneNum" label="号码" >
                         </el-table-column>
-                        <el-table-column prop="gist" label="归属地">
+                        <el-table-column prop="cellLoc" label="归属地">
                         </el-table-column>
-                        <el-table-column prop="gist" label="月份">
+                        <el-table-column prop="cellMth" label="月份">
                         </el-table-column>
-                        <el-table-column prop="gist" label="呼叫次数">
-                        </el-table-column>                                                
-                        <el-table-column prop="gist" label="主叫次数">
+                        <el-table-column prop="callOutCnt" label="主叫次数">
                         </el-table-column>
-                        <el-table-column prop="gist" label="主叫时间">
+                        <el-table-column prop="callOutTime" label="主叫时间">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="被叫次数">
+                        <el-table-column prop="callInCnt" label="被叫次数">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="被叫时间">
+                        <el-table-column prop="callInTime" label="被叫时间">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="短信数量">
+                        <el-table-column prop="netFlow" label="流量消费">
                         </el-table-column>
-                        <el-table-column prop="gist" label="话费消费">
+                        <el-table-column prop="totalAmount" label="话费消费">
                         </el-table-column>                                                                                                                                                
                     </el-table>                     
                   </el-card>  
                   <!-- 联系人区域汇总                  -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="linkmanTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>联系人区域汇总 </h2>
@@ -441,30 +446,30 @@
                         </div>
                     </div>
                     <el-table :data="linkmanTableData">
-                        <el-table-column prop="testItem" label="地区" >
+                        <el-table-column prop="regionLoc" label="地区" >
                         </el-table-column>
-                        <el-table-column prop="result" label="号码次数" >
+                        <el-table-column prop="regionUniqNumCnt" label="号码次数" >
                         </el-table-column>
-                        <el-table-column prop="gist" label="呼入次数">
+                        <el-table-column prop="regionCallInCnt" label="呼入次数">
                         </el-table-column>
-                        <el-table-column prop="gist" label="呼出次数">
+                        <el-table-column prop="regionCallOutCnt" label="呼出次数">
                         </el-table-column>
-                        <el-table-column prop="gist" label="呼入时间">
+                        <el-table-column prop="regionAvgCallInTime" label="呼入时间">
                         </el-table-column>                                                
-                        <el-table-column prop="gist" label="呼出时间">
+                        <el-table-column prop="regionAvgCallOutTime" label="呼出时间">
                         </el-table-column>
-                        <el-table-column prop="gist" label="呼入次数比">
+                        <el-table-column prop="regionCallInCntPct" label="呼入次数比">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="呼出次数比">
+                        <el-table-column prop="regionCallOutCntPct" label="呼出次数比">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="呼入时间比">
+                        <el-table-column prop="regionCallInTimePct" label="呼入时间比">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="呼出时间比">
+                        <el-table-column prop="regionCallOutTimePct" label="呼出时间比">
                         </el-table-column>
                     </el-table>                     
                   </el-card> 
                   <!-- 运营商数据分析                   -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="operatorDataTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>运营商数据分析 </h2>
@@ -472,26 +477,26 @@
                         </div>
                     </div>
                     <el-table :data="operatorDataTableData">
-                        <el-table-column prop="testItem" label="号码" >
+                        <el-table-column prop="phone_num" label="号码" >
                         </el-table-column>
-                        <el-table-column prop="result" label="互联网标识" >
+                        <el-table-column prop="contact_name" label="互联网标识" >
                         </el-table-column>
-                        <el-table-column prop="gist" label="需求类型">
+                        <el-table-column prop="p_relation" label="关系推测">
                         </el-table-column>
-                        <el-table-column prop="gist" label="归属地">
+                        <el-table-column prop="phone_num_loc" label="归属地">
                         </el-table-column>
-                        <el-table-column prop="gist" label="通话次数">
+                        <!-- <el-table-column prop="gist" label="通话次数">
                         </el-table-column>                                                
                         <el-table-column prop="gist" label="通话时间(分)">
-                        </el-table-column>
-                        <el-table-column prop="gist" label="主叫次数">
+                        </el-table-column> -->
+                        <el-table-column prop="call_out_cnt" label="主叫次数">
                         </el-table-column>  
-                        <el-table-column prop="gist" label="被叫次数">
+                        <el-table-column prop="call_in_cnt" label="被叫次数">
                         </el-table-column>  
                     </el-table>                     
                   </el-card> 
                   <!-- 联系人信息                  -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="contactTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>联系人信息 </h2>
@@ -514,7 +519,7 @@
                     </el-table>                     
                   </el-card>  
                   <!-- 电商地址信息                  -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="esAddTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>电商地址信息 </h2>
@@ -533,7 +538,7 @@
                     </el-table>                     
                   </el-card>  
                   <!-- 电商数据分析                  -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="esDataTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>电商数据分析</h2>
@@ -552,7 +557,7 @@
                     </el-table>                     
                   </el-card> 
                   <!-- 出行数据分析                 -->
-                  <el-card class="el-card">
+                  <el-card class="el-card" v-if="tripTableData.length>0">
                     <div  class="clearfix">
                         <div class="panel_title">
                           <h2>出行数据分析</h2>
@@ -580,7 +585,7 @@
 </template>
 
 <script>
-import { httpGetCreditReport } from "@/api/http";
+import { httpGetCreditReport, httpPostCarryReport } from "@/api/http";
 import { timeFormat } from "../../../../static/js/time";
 // import "../../../assets/libs/jquery/jQuery.print.js";
 export default {
@@ -602,18 +607,19 @@ export default {
       currentPage: 1,
       allpage: 0,
       select_phone: "",
-      userBasicInformation: [], //用户基本信息检测
+      userBasicInformation: {}, //用户基本信息检测用户基本信息检测
+      userInfo: {},
       fullscreenWidth: "80%",
       fullscreenHeight: "450px",
-      kinsfolkTableData: [{ name: "小王" }], //亲属联系人
-      testTableData: [{ testItem: "fas" }],
-      operatorTableData: [{ testItem: "fas" }], //运营商消费数据
-      linkmanTableData: [{ testItem: "fas" }], //联系人区域汇总
-      operatorDataTableData: [{ testItem: "fas" }], //运行商数据分析
-      contactTableData: [{ testItem: "fas" }], //联系人信息
-      esAddTableData: [{ testItem: "fas" }], //电商信息
-      esDataTableData: [{ testItem: "fas" }], //电商数据统计
-      tripTableData: [{ testItem: "fas" }],
+      kinsfolkTableData: [], //亲属联系人
+      testTableData: [],
+      operatorTableData: [], //运营商消费数据
+      linkmanTableData: [], //联系人区域汇总
+      operatorDataTableData: [], //运行商数据分析
+      contactTableData: [], //联系人信息
+      esAddTableData: [], //电商信息
+      esDataTableData: [], //电商数据统计
+      tripTableData: [],
       canvasimg: "",
       canvasShow: true,
       note: {
@@ -636,6 +642,20 @@ export default {
     //查看报告
     handleReport(index, row) {
       this.showVisible = true;
+      let _this = this;
+      httpPostCarryReport()
+        .then(res => {
+          let data = res.data;
+          _this.userBasicInformation = data.mifengreportApplicationCheck;
+          _this.testTableData = data.list1;
+          _this.operatorTableData = data.list2;
+          _this.kinsfolkTableData = data.list3;
+          _this.linkmanTableData = data.list4;
+          _this.operatorDataTableData = data.list6;
+          _this.userInfo = data.mifengreportUserInfoCheck;
+        })
+
+        .catch();
       setTimeout(() => {
         if (this.canvasShow) {
           var canvas = document.getElementById("myCanvas");
@@ -676,12 +696,15 @@ export default {
       httpGetCreditReport(pagesize, npage, startDate, EndDate, phonenume, 2)
         .then(res => {
           let data = res.data;
+          console.log(data.list);
           _this.allpage = data.allsize;
           _this.currentPage = data.npage;
           _this.tableData = data.list;
           _this.loading = false;
         })
-        .catch();
+        .catch(() => {
+          _this.loading = false;
+        });
     },
     handleSearch() {
       this.currentPage = 1;
@@ -720,7 +743,7 @@ export default {
     },
 
     Print() {
-      $("#subOutputRank-print").print({
+      jQuery("#subOutputRank-print").print({
         //Use Global styles
         globalStyles: false,
         //Add link with attrbute media=print
@@ -749,6 +772,11 @@ export default {
   created() {}
 };
 </script>
+<style>
+#table .el-dialog__body {
+  padding: 0px 20px 20px;
+}
+</style>
 
 <style scoped>
 .title {
